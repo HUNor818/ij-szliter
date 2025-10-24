@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Litéri Hagyományőrző Íjász Egyesület</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 102, 149, 1.0);
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 15px 20px;
+  font-weight: bold;
+}
+
+nav a:hover {
+  background: rgba(68, 68, 68, 0.9);
+}
+
+/* Hero szekció */
+.szekcio-savos {
+  display: flex;
+  min-height: 80vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bal-sav {
+  width: 200px;
+  background: #006695;
+}
+
+.tartalom {
+  flex: 1;
+  padding: 40px 60px;
+  margin-left: -100px;
+  color: #dcc51f;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+
+/* Szöveges szekciók */
+.section, .section-kek, .section-sarga {
+  min-height: 80vh;
+  display: flex;
+  justify-content: flex-start; /* vagy center, ha kell */
+  align-items: center;
+  position: relative;
+  color: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 60px 20px;
+}
+
+
+.section-kek {
+  background: rgba(0, 102, 149, 1.0);
+}
+
+.section-sarga {
+  background: rgba(220, 197, 31, 1.0);
+}
+
+.szoveg-oldalt-bal {
+  max-width: 600px;
+  text-align: left;
+  padding: 40px;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+/* Elválasztó */
+.elvalaszto {
+  width: 100%;
+  height: 120px;
+  background: black;
+  transform: skewY(3deg);
+  margin: -60px 0;
+  z-index: 2;
+}
+
+/* Hírek slider */
+.gorgos-szekcio {
+  padding: 40px;
+  background: rgba(0, 102, 149, 0.1);
+  text-align: center;
+}
+
+.gorgos-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 0;
+  scroll-snap-type: x mandatory;
+}
+
+.kartya {
+  width: 250px;
+  height: auto;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.kartya:hover {
+  transform: scale(1.05);
+}
+
+.kartya img {
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+/* Galéria */
+.galeria img {
+  width: 200px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Videók */
+.video-container iframe {
+  width: 100%;
+  max-width: 600px;
+  height: 360px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Impresszum */
+.impresszum {
+  text-align: center;
+  padding: 40px;
+  background: #003d59;
+  color: white;
+}
+
+.impresszum a {
+  color: #ffc107;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.szoveg-balra {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+  max-width: 600px;
+}
+
+.szoveg-jobbra {
+  text-align: right;
+  margin-left: auto;
+  margin-right: 0;
+  max-width: 600px;
+}
+
+.szoveg-kozep {
+  text-align: center;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+#navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: top 0.3s ease;
+}
+
+#navbar.elrejtve {
+  top: -100px; /* vagy nav magassága */
+}
+
+#logoSarok {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+#logoSarok img {
+  height: 110px; /* vagy amit szeretnél */
+  width: auto;
+}
+
+#rolunkPublikus {
+  padding: 60px 30px;
+  background: #f8f8f8;
+  color: #333;
+}
+
+.rolunk-tartalom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.rolunk-szoveg {
+  flex: 1 1 45%;
+  font-size: 1.1em;
+}
+
+.rolunk-kepek {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rolunk-kepek img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+
+@media (max-width: 768px) {
+  body {
+    padding: 0 10px;
+  }
+
+  nav {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  nav a {
+    padding: 10px;
+    font-size: 1em;
+    text-align: center;
+  }
+
+  .szekcio-savos {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .bal-sav {
+    width: 100%;
+    height: 40px;
+  }
+
+  .tartalom {
+    margin-left: 0;
+    padding: 30px 20px;
+    font-size: 2rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .section,
+  .section-kek,
+  .section-sarga {
+    flex-direction: column;
+    padding: 40px 15px;
+    text-align: center;
+  }
+
+  .szoveg-oldalt-bal,
+  .szoveg-balra,
+  .szoveg-jobbra,
+  .szoveg-kozep {
+    max-width: 100%;
+    padding: 0 10px;
+    text-align: center;
+  }
+
+  .rolunk-tartalom {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .rolunk-szoveg,
+  .rolunk-kepek {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .rolunk-kepek img {
+    width: 100%;
+  }
+
+  .gorgos-container {
+    flex-direction: column;
+    align-items: center;
+    overflow-x: visible;
+  }
+
+  .kartya {
+    width: 90%;
+    margin-bottom: 20px;
+  }
+
+  .galeria img {
+    width: 90%;
+    margin: 10px auto;
+    display: block;
+  }
+
+  .video-container iframe {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+  }
+
+  .impresszum {
+    padding: 30px 15px;
+    font-size: 0.95em;
+  }
+
+  #logoSarok img {
+    height: 80px;
+  }
+
+  .elvalaszto {
+    height: 60px;
+    transform: none;
+    margin: 0;
+  }
+}
+
+</style>
+
+<body>
+
+  <div id="logoSarok">
+    <img src="logo.png" alt="Logó" />
+  </div>
+
+  <nav id="navbar" class="menu-center">
+    <a href="#rolunk">Rólunk</a>
+    <a href="#orarend">Órarend</a>
+    <a href="#hirek">Hírek</a>
+    <a href="#galeria">Galéria</a>
+    <a href="#videok">Videók</a>
+    <a href="bajnoksag.html">Házi bajnokság</a>
+  </nav>
+
+  <section class="szekcio-savos" style="background: url('kep8.JPG') center/cover no-repeat;">
+    <div class="bal-sav"></div>
+    <div class="tartalom">
+      <p>Közösség<br>íjászat<br>erőnlét</p>
+    </div>
+  </section>
+
+  <section id="rolunk" class="section-sarga">
+  <div class="rolunk-tartalom">
+    <div class="rolunk-szoveg">
+      <h2>Rólunk</h2>
+      <p id="rolunkTartalom"></p>
+    </div>
+  </div>
+</section>
+
+  <section id="orarend" class="section-kek">
+    <div class="szoveg-oldalt-bal">
+      <h2>Órarend (november hónap)</h2>
+      <ul id="orarendTartalom"></ul>
+    </div>
+  </section>
+
+  <section id="hirek" class="gorgos-szekcio">
+    <h2>Hírek</h2>
+    <div class="gorgos-container" id="hirekContainer"></div>
+  </section>
+
+  <section id="galeria" class="section-sarga">
+    <div class="szoveg-oldalt-bal">
+      <h2>Képgaléria</h2>
+      <div class="galeria" id="galeriaKepek"></div>
+    </div>
+  </section>
+
+  <section id="videok" class="section-kek">
+    <div class="szoveg-oldalt-bal">
+      <h2>Videók</h2>
+      <div class="video-container" id="videoBox"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="impresszum" style="text-align:center; padding:40px; background:#003d59; color:white;">
+      <p>Litéri Hagyományőrző Íjász Egyesület</p>
+      <p>Elérhetőség: --- | Cím: ---
+      <p>
+        <a href="https://www.facebook.com/literijasz?locale=hu_HU" style="color:#ffc107;">Facebook</a> |
+        <a href="https://www.instagram.com/literijaszat/" style="color:#ffc107;">Instagram</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const cel = document.querySelector(this.getAttribute('href'));
+      if (cel) {
+        window.scrollTo({ top: cel.offsetTop, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // RÓLUNK
+  const rolunk = localStorage.getItem("rolunkSzoveg") || "Bemutatkozó szöveg hamarosan...";
+  document.getElementById("rolunkTartalom").innerHTML = rolunk;
+
+  // ÓRAREND
+  const orarend = JSON.parse(localStorage.getItem("orarendLista")) || [];
+  const oraLista = document.getElementById("orarendTartalom");
+  orarend.forEach(ora => {
+    const li = document.createElement("li");
+    li.textContent = `${ora.nap} – ${ora.ido} > ${ora.hely}`;
+    oraLista.appendChild(li);
+  });
+
+  // HÍREK
+  const hirek = JSON.parse(localStorage.getItem("hirekLista")) || [];
+  const hirekContainer = document.getElementById("hirekContainer");
+  hirek.slice(0, 6).forEach(hir => {
+    const kartya = document.createElement("div");
+    kartya.className = "kartya";
+    kartya.innerHTML = `
+      ${hir.kep ? `<img src="${hir.kep}" alt="Hír kép">` : ""}
+      <h3>${hir.cim}</h3>
+      <p>${hir.szoveg}</p>
+    `;
+    hirekContainer.appendChild(kartya);
+  });
+
+  // GALÉRIA
+  const kepek = JSON.parse(localStorage.getItem("galeriaKepek")) || [];
+  const galeria = document.getElementById("galeriaKepek");
+  kepek.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.style.width = "200px";
+    img.style.margin = "10px";
+    img.style.borderRadius = "8px";
+    galeria.appendChild(img);
+  });
+
+  // VIDEÓK
+  const videok = JSON.parse(localStorage.getItem("videoLinkek")) || [];
+  const videoBox = document.getElementById("videoBox");
+  videok.forEach(link => {
+    const iframe = document.createElement("iframe");
+    iframe.src = link.replace("watch?v=", "embed/") + "?enablejsapi=1";
+    iframe.width = "100%";
+    iframe.height = "360";
+    iframe.allow = "autoplay";
+    iframe.setAttribute("data-autoplay", "true");
+    iframe.setAttribute("allowfullscreen", "true");
+    videoBox.appendChild(iframe);
+  });
+
+  // Scroll-triggered autoplay
+  window.addEventListener("scroll", () => {
+    document.querySelectorAll("iframe[data-autoplay]").forEach(iframe => {
+      const rect = iframe.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      }
+    });
+  });
+</script>
+
+<script>
+  let elozoPozicio = window.scrollY;
+  const navbar = document.getElementById("navbar");
+
+  window.addEventListener("scroll", () => {
+    const aktualisPozicio = window.scrollY;
+
+    if (aktualisPozicio > elozoPozicio) {
+      // lefelé görgetés → elrejt
+      navbar.classList.add("elrejtve");
+    } else {
+      // felfelé görgetés → megjelenít
+      navbar.classList.remove("elrejtve");
+    }
+
+    elozoPozicio = aktualisPozicio;
+  });
+</script>
+
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const szoveg = localStorage.getItem("rolunkSzoveg");
+    const kep1 = localStorage.getItem("rolunkKep1");
+    const kep2 = localStorage.getItem("rolunkKep2");
+
+    if (szoveg) document.getElementById("rolunkSzovegPublikus").textContent = szoveg;
+    if (kep1) document.getElementById("rolunkKepPublikus1").src = kep1;
+    if (kep2) document.getElementById("rolunkKepPublikus2").src = kep2;
+  });
+</script>
+
+</body>
+</html>

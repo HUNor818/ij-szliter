@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin felület</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #003d59;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
+
+    .form-panel, .naplo-panel {
+      flex: 1 1 300px;
+      background: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      min-width: 280px;
+    }
+
+    h1, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffc107;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #dc3545;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .megerosites {
+      margin-top: 20px;
+      text-align: center;
+      color: #c8f7c5;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 10px 0;
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    .logout {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .logout button {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .admin-tabella {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 40px;
+      color: white;
+    }
+
+    .tabella-grid {
+      display: grid;
+      grid-template-columns: 60px 1fr 100px 60px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .tabella-grid input {
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: none;
+    }
+
+    .uj-sor {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .uj-sor input {
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: none;
+    }
+
+    .uj-sor button {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+  body {
+    padding: 20px;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: 20px;
+    margin: 20px auto;
+  }
+
+  .form-panel,
+  .naplo-panel,
+  .admin-tabella {
+    flex: 1 1 100%;
+    padding: 20px;
+    margin: 0 auto;
+  }
+
+  h1, h3 {
+    font-size: 1.3em;
+  }
+
+  input,
+  textarea,
+  button {
+    font-size: 1em;
+    padding: 10px;
+  }
+
+  label {
+    margin-top: 15px;
+    font-size: 0.95em;
+  }
+
+  .uj-sor {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tabella-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .logout {
+    margin: 20px 0;
+  }
+
+  .rolunk-jobb img,
+  .rolunk-kepek img {
+    width: 100%;
+  }
+
+  ul {
+    padding-left: 0;
+  }
+
+  li {
+    font-size: 0.95em;
+  }
+
+  .megerosites {
+    font-size: 0.95em;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <script>
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <div class="logout">
+    <button onclick="localStorage.removeItem('adminLoggedIn'); location.href='login.html';">Kilépés</button>
+  </div>
+
+  <div class="container"> 
+    <!-- RÓLUNK szekció --> 
+    <div class="form-panel"> 
+      <h3>RÓLUNK szöveg</h3> 
+      <textarea id="rolunkSzoveg" rows="8" placeholder="Írd be a bemutatkozó szöveget..."></textarea> 
+      <button onclick="mentesRolunk()">Mentés</button> 
+      <div class="megerosites" id="rolunkUzenet">
+    </div> 
+  </div>
+
+    <!-- ÓRAREND szekció -->
+    <div class="form-panel">
+      <h3>ÓRAREND</h3>
+      <label>Nap</label>
+      <input type="text" id="oraNap" placeholder="Pl. Hétfő">
+      <label>Időpont</label>
+      <input type="text" id="oraIdo" placeholder="Pl. 18:00–19:30">
+      <label>Helyszín</label>
+      <input type="text" id="oraHely" placeholder="Pl. Sportcsarnok">
+      <button onclick="hozzaadOrarend()">Hozzáadás</button>
+      <ul id="orarendLista"></ul>
+    </div>
+
+    <!-- HÍREK szekció -->
+    <div class="form-panel">
+      <h3>HÍREK hozzáadása</h3>
+      <label>Cím</label>
+      <input type="text" id="hirCim">
+      <label>Leírás</label>
+      <textarea id="hirSzoveg" rows="4"></textarea>
+      <label>Kép (opcionális)</label>
+      <input type="file" id="hirKep" accept="image/*">
+      <button onclick="hozzaadHir()">Hozzáadás</button>
+      <ul id="hirekLista"></ul>
+    </div>
+
+    <!-- KÉPGALÉRIA szekció -->
+    <div class="form-panel">
+      <h3>KÉPGALÉRIA</h3>
+      <input type="file" id="galeriaInput" accept="image/*" multiple>
+      <button onclick="mentesGaleria()">Feltöltés</button>
+      <ul id="galeriaLista"></ul>
+    </div>
+
+    <!-- VIDEÓK szekció -->
+    <div class="form-panel">
+      <h3>VIDEÓK (YouTube linkek)</h3>
+      <input type="text" id="videoLink1" placeholder="YouTube link 1">
+      <input type="text" id="videoLink2" placeholder="YouTube link 2">
+      <button onclick="mentesVideok()">Mentés</button>
+      <div class="megerosites" id="videoUzenet"></div>
+    </div>
+
+    <!-- NAPLÓ -->
+    <div class="naplo-panel">
+      <h3>Tevékenységi napló</h3>
+      <ul id="naploLista"></ul>
+    </div>
+  </div>
+
+  <div class="admin-tabella">
+    <h3>Tabella szerkesztés</h3>
+    <div id="tabellaSorok" class="tabella-grid"></div>
+
+    <div class="uj-sor">
+      <input type="text" id="ujNev" placeholder="Név">
+      <input type="number" id="ujPont" placeholder="Pontszám">
+      <button onclick="hozzaadTabellaSort()">➕ Új sor</button>
+    </div>
+  </div>
+
+
+  <script>
+  // 🔐 Fix belépési adatok
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "hunor2025";
+
+// 🔐 Belépés
+function ellenorizBelepes() {
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value.trim();
+  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    localStorage.setItem("bejelentkezve", "true");
+    location.href = "admin.html";
+  } else {
+    document.getElementById("loginUzenet").textContent = "❌ Hibás belépési adatok!";
+  }
+}
+
+function ellenorizJogosultsag() {
+  if (localStorage.getItem("bejelentkezve") !== "true") {
+    alert("Kérlek jelentkezz be!");
+    location.href = "login.html";
+  }
+}
+
+function kijelentkezes() {
+  localStorage.removeItem("bejelentkezve");
+  location.href = "login.html";
+}
+
+// 📘 Napló
+function naploBejegyzes(szoveg) {
+  const naplo = JSON.parse(localStorage.getItem("tevekenysegiNaplo")) || [];
+  const idopont = new Date().toLocaleString();
+  naplo.unshift(`${idopont} – ${szoveg}`);
+  localStorage.setItem("tevekenysegiNaplo", JSON.stringify(naplo));
+  frissitNaplo();
+}
+
+function frissitNaplo() {
+  const lista = document.getElementById("naploLista");
+  const naplo = JSON.parse(localStorage.getItem("tevekenysegiNaplo")) || [];
+  lista.innerHTML = "";
+  naplo.slice(0, 10).forEach(sor => {
+    const li = document.createElement("li");
+    li.textContent = sor;
+    lista.appendChild(li);
+  });
+}
+
+// 🧾 Rólunk 
+function mentesRolunk() { 
+  const szoveg = document.getElementById("rolunkSzoveg").value.trim(); 
+  localStorage.setItem("rolunkSzoveg", szoveg); 
+  document.getElementById("rolunkUzenet").textContent = "✅ Mentve!"; 
+  naploBejegyzes("RÓLUNK szöveg frissítve"); 
+}
+
+// 📅 Órarend
+function hozzaadOrarend() {
+  const nap = document.getElementById("oraNap").value.trim();
+  const ido = document.getElementById("oraIdo").value.trim();
+  const hely = document.getElementById("oraHely").value.trim();
+  if (!nap || !ido || !hely) return;
+  const lista = JSON.parse(localStorage.getItem("orarendLista")) || [];
+  lista.push({ nap, ido, hely });
+  localStorage.setItem("orarendLista", JSON.stringify(lista));
+  naploBejegyzes(`Új órarendi bejegyzés: ${nap} ${ido} ${hely}`);
+  megjelenitOrarend();
+}
+
+function megjelenitOrarend() {
+  const lista = JSON.parse(localStorage.getItem("orarendLista")) || [];
+  const ul = document.getElementById("orarendLista");
+  ul.innerHTML = "";
+  lista.forEach((ora, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${ora.nap} – ${ora.ido} ${ora.hely}`;
+    const torles = document.createElement("button");
+    torles.textContent = "❌";
+    torles.onclick = () => {
+      lista.splice(i, 1);
+      localStorage.setItem("orarendLista", JSON.stringify(lista));
+      naploBejegyzes(`Órarend törölve: ${ora.nap} ${ora.ido}`);
+      megjelenitOrarend();
+    };
+    li.appendChild(torles);
+    ul.appendChild(li);
+  });
+}
+
+// 📰 Hírek
+function hozzaadHir() {
+  const cim = document.getElementById("hirCim").value.trim();
+  const szoveg = document.getElementById("hirSzoveg").value.trim();
+  const file = document.getElementById("hirKep").files[0];
+  if (!cim || !szoveg) return;
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => mentesHir({ cim, szoveg, kep: reader.result });
+    reader.readAsDataURL(file);
+  } else {
+    mentesHir({ cim, szoveg, kep: "" });
+  }
+}
+
+function mentesHir(hir) {
+  const lista = JSON.parse(localStorage.getItem("hirekLista")) || [];
+  lista.unshift(hir);
+  localStorage.setItem("hirekLista", JSON.stringify(lista.slice(0, 6)));
+  naploBejegyzes(`Új hír: ${hir.cim}`);
+  megjelenitHirek();
+}
+
+function megjelenitHirek() {
+  const lista = JSON.parse(localStorage.getItem("hirekLista")) || [];
+  const ul = document.getElementById("hirekLista");
+  ul.innerHTML = "";
+  lista.forEach((hir, i) => {
+    const li = document.createElement("li");
+    li.textContent = hir.cim;
+    const torles = document.createElement("button");
+    torles.textContent = "❌";
+    torles.onclick = () => {
+      lista.splice(i, 1);
+      localStorage.setItem("hirekLista", JSON.stringify(lista));
+      naploBejegyzes(`Hír törölve: ${hir.cim}`);
+      megjelenitHirek();
+    };
+    li.appendChild(torles);
+    ul.appendChild(li);
+  });
+}
+
+// 🖼️ Galéria
+function mentesGaleria() {
+  const files = Array.from(document.getElementById("galeriaInput").files);
+  const promises = files.map(file => new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  }));
+  Promise.all(promises).then(kepek => {
+    const eddigiek = JSON.parse(localStorage.getItem("galeriaKepek")) || [];
+    const uj = [...kepek, ...eddigiek].slice(0, 30);
+    localStorage.setItem("galeriaKepek", JSON.stringify(uj));
+    naploBejegyzes(`${kepek.length} új kép feltöltve`);
+    megjelenitGaleria();
+  });
+}
+
+function megjelenitGaleria() {
+  const lista = JSON.parse(localStorage.getItem("galeriaKepek")) || [];
+  const ul = document.getElementById("galeriaLista");
+  ul.innerHTML = "";
+  lista.forEach((src, i) => {
+    const li = document.createElement("li");
+    li.textContent = `Kép ${i + 1}`;
+    const torles = document.createElement("button");
+    torles.textContent = "❌";
+    torles.onclick = () => {
+      lista.splice(i, 1);
+      localStorage.setItem("galeriaKepek", JSON.stringify(lista));
+      naploBejegyzes(`Galériaképet töröltünk (${i + 1})`);
+      megjelenitGaleria();
+    };
+    li.appendChild(torles);
+    ul.appendChild(li);
+  });
+}
+
+// 🎥 Videók
+function mentesVideok() {
+  const link1 = document.getElementById("videoLink1").value.trim();
+  const link2 = document.getElementById("videoLink2").value.trim();
+  const videok = [link1, link2].filter(l => l.includes("youtube.com") || l.includes("youtu.be"));
+  localStorage.setItem("videoLinkek", JSON.stringify(videok.slice(0, 2)));
+  document.getElementById("videoUzenet").textContent = "✅ Videók mentve!";
+  naploBejegyzes("Videólinkek frissítve");
+  megjelenitVideok();
+}
+
+function megjelenitVideok() {
+  const lista = JSON.parse(localStorage.getItem("videoLinkek")) || [];
+  const container = document.getElementById("videoBox");
+  if (!container) return;
+  container.innerHTML = "";
+  lista.forEach((link, i) => {
+    const div = document.createElement("div");
+    div.textContent = link;
+    const torles = document.createElement("button");
+    torles.textContent = "❌";
+    torles.onclick = () => {
+      lista.splice(i, 1);
+      localStorage.setItem("videoLinkek", JSON.stringify(lista));
+      naploBejegyzes(`Videó törölve: ${link}`);
+      megjelenitVideok();
+    };
+    div.appendChild(torles);
+    container.appendChild(div);
+  });
+}
+
+// 🏆 Versenytábla
+function hozzaadTabellaSort() {
+  const nev = document.getElementById("ujNev").value.trim();
+  const pont = parseInt(document.getElementById("ujPont").value.trim());
+  if (!nev || isNaN(pont)) return;
+
+  const lista = JSON.parse(localStorage.getItem("versenyTabella")) || [];
+  lista.push({ nev, pont });
+  lista.sort((a, b) => b.pont - a.pont);
+  localStorage.setItem("versenyTabella", JSON.stringify(lista));
+  naploBejegyzes(`Új versenyző hozzáadva: ${nev} (${pont} pont)`);
+  document.getElementById("ujNev").value = "";
+  document.getElementById("ujPont").value = "";
+  megjelenitTabellaAdmin();
+}
+
+function megjelenitTabellaAdmin() {
+  const lista = JSON.parse(localStorage.getItem("versenyTabella")) || [];
+  const container = document.getElementById("tabellaSorok");
+  container.innerHTML = "";
+
+  lista.forEach((sor, i) => {
+    const sorszam = document.createElement("div");
+    sorszam.textContent = `${i + 1}.`;
+
+    const nevInput = document.createElement("input");
+    nevInput.value = sor.nev;
+
+    const pontInput = document.createElement("input");
+    pontInput.type = "number";
+    pontInput.value = sor.pont;
+
+    const torles = document.createElement("button");
+    torles.textContent = "❌";
+    torles.onclick = () => {
+      lista.splice(i, 1);
+      localStorage.setItem("versenyTabella", JSON.stringify(lista));
+      naploBejegyzes(`Versenyző törölve: ${sor.nev}`);
+      megjelenitTabellaAdmin();
+    };
+
+    nevInput.onchange = pontInput.onchange = () => {
+      lista[i].nev = nevInput.value.trim();
+      lista[i].pont = parseInt(pontInput.value.trim());
+      lista.sort((a, b) => b.pont - a.pont);
+      localStorage.setItem("versenyTabella", JSON.stringify(lista));
+      naploBejegyzes(`Versenyző módosítva: ${lista[i].nev} (${lista[i].pont} pont)`);
+      megjelenitTabellaAdmin();
+    };
+
+    container.appendChild(sorszam);
+    container.appendChild(nevInput);
+    container.appendChild(pontInput);
+    container.appendChild(torles);
+  });
+}
+</script>
+</body>
+</html>
+ 

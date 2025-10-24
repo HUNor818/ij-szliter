@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin belépés / regisztráció</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #003d59;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(255,255,255,0.1);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      width: 320px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+    }
+
+    button {
+      background: #ffc107;
+      color: #003d59;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .msg {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .toggle {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #ffdb4d;
+    }
+
+    @media (max-width: 480px) {
+  body {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 320px;
+    padding: 30px 20px;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  h2 {
+    font-size: 1.4em;
+  }
+
+  input, button {
+    font-size: 1em;
+    padding: 12px;
+  }
+
+  .toggle {
+    font-size: 0.95rem;
+    margin-top: 15px;
+  }
+
+  .msg {
+    font-size: 0.95rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="formTitle">Admin belépés</h2>
+    <input type="text" id="username" placeholder="Felhasználónév">
+    <input type="password" id="password" placeholder="Jelszó">
+    <button onclick="handleAction()" id="actionBtn">Belépés</button>
+    <div class="msg" id="msg"></div>
+    <div class="toggle" onclick="toggleMode()">Nincs fiókod? Regisztrálj itt</div>
+  </div>
+
+  <script>
+    let regMode = false;
+
+    function toggleMode() {
+      regMode = !regMode;
+      document.getElementById("formTitle").textContent = regMode ? "Admin regisztráció" : "Admin belépés";
+      document.getElementById("actionBtn").textContent = regMode ? "Regisztráció" : "Belépés";
+      document.querySelector(".toggle").textContent = regMode ? "Van már fiókod? Lépj be itt" : "Nincs fiókod? Regisztrálj itt";
+      document.getElementById("msg").textContent = "";
+    }
+
+    function handleAction() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const msg = document.getElementById("msg");
+
+      if (!username || !password) {
+        msg.textContent = "❌ Kérlek töltsd ki mindkét mezőt!";
+        return;
+      }
+
+      //fix jelszó/kód
+      if (username === "admin" && password === "hunor2025") {
+        localStorage.setItem("adminLoggedIn", "true");
+        window.location.href = "admin.html";
+        return;
+      }
+
+      if (regMode) {
+        // Regisztráció
+        const pending = JSON.parse(localStorage.getItem("pendingUsers")) || [];
+        const exists = pending.find(u => u.username === username);
+        if (exists) {
+          msg.textContent = "❌ Ez a felhasználónév már várakozik!";
+          return;
+        }
+        pending.push({ username, password });
+        localStorage.setItem("pendingUsers", JSON.stringify(pending));
+        msg.textContent = "✅ Regisztráció elküldve, várakozik jóváhagyásra.";
+        toggleMode();
+      } else {
+        // Belépés
+        const approved = JSON.parse(localStorage.getItem("approvedUsers")) || [];
+        const match = approved.find(u => u.username === username && u.password === password);
+        if (match) {
+          localStorage.setItem("adminLoggedIn", "true");
+          window.location.href = "admin.html";
+        } else {
+          msg.textContent = "❌ Hibás adatok vagy a fiók nincs jóváhagyva!";
+        }
+      }
+    }
+  </script>
+</body>
+</html>
